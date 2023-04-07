@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "9456681668",
+    "project_id": "p-dos-444bd",
+    "storage_bucket": "p-dos-444bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9456681668:android:fb5719e7756793f1c1ff91",
+        "android_client_info": {
+          "package_name": "com.example.p_dos_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9456681668-t3hqe66mep5dg6som5qoeec3qjq61ej8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZeFIpZu6qAsPQur7ytOxRaackawqKH8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9456681668-t3hqe66mep5dg6som5qoeec3qjq61ej8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
