@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:p_dos_admin/constant.dart';
+import 'package:p_dos_admin/screens/readData.dart';
 import 'package:p_dos_admin/screens/verification.dart';
 
 import '../main.dart';
@@ -161,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       minimumSize:
                           Size(MediaQuery.of(context).size.width - 30, 43),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_emailController.text.isEmpty) {
                         displayMessage("Please Enter the Email ");
                       } else if (!email.contains('@') ||
@@ -175,15 +177,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         displayMessage(
                             'password should be AtLeast 6 Character');
                       } else {
-                        Get.to(
-                          Verification(
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          ),
-                        );
+                        try {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            await _auth.signInWithEmailAndPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+
+
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            displayMessage('Login Success');
+                            Get.to(ExcelCsvReader());
+
+                        } catch (e) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          displayMessage("User Record not found");
+                        }
                       }
                     },
-                    child: Text(
+                    child:_isLoading ? Center(child: CircularProgressIndicator(color: Colors.white,),): Text(
                       'Login',
                       style: buttonText,
                     ),
@@ -196,4 +214,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
 }

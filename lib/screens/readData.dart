@@ -38,54 +38,38 @@ class _ExcelCsvReaderState extends State<ExcelCsvReader> {
       return;
     }
   }
-
   Future<List<List<dynamic>>> readExcel() async {
     try {
-      // Check storage permission
       PermissionStatus permission = await Permission.storage.status;
       if (!permission.isGranted) {
-        // Request storage permission
         permission = await Permission.storage.request();
-
-        // Handle user's response
         if (permission.isGranted) {
-          // Storage permission granted
-          // Do something here
         } else {
-          // Storage permission denied
           print("Storage permission not granted");
           return [];
         }
       }
-
-      // Pick an Excel or CSV file
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['csv', 'xls', 'xlsx'],
       );
 
       if (result == null) {
-        // Handle case where file picker is cancelled
         displayMessage("No file selected");
         return [];
       }
 
       if (!['csv', 'xls', 'xlsx'].contains(result.files.single.extension)) {
-        // Handle case where selected file is not an Excel or CSV file
         displayMessage("Please select an Excel or CSV file");
         return [];
       }
-
-      // Read data from Excel file
       final file = File(result.files.single.path!);
       final bytes = await file.readAsBytes();
       final excel = Excel.decodeBytes(bytes);
 
       setState(() {
-        _isLoading = true; // show progress indicator
+        _isLoading = true;
       });
-
-      // Delete existing data from Firestore
       try {
         QuerySnapshot snapshot =
             await FirebaseFirestore.instance.collection("excel").get();
@@ -99,12 +83,10 @@ class _ExcelCsvReaderState extends State<ExcelCsvReader> {
         print("Error deleting existing data: $e");
         displayMessage("Error deleting existing data: $e");
         setState(() {
-          _isLoading = false; // hide progress indicator
+          _isLoading = false;
         });
         return [];
       }
-
-      // Upload data to Firestore
       print("Uploading data...");
       final rows = <List<dynamic>>[];
       final headers = <String>[];
@@ -112,7 +94,6 @@ class _ExcelCsvReaderState extends State<ExcelCsvReader> {
         final sheet = excel.tables[sheetName]!;
 
         if (sheet.rows.length < 2) {
-          // Handle case where selected sheet has no data
           displayMessage("Sheet \"$sheetName\" does not contain any data");
           continue;
         }
@@ -146,7 +127,7 @@ class _ExcelCsvReaderState extends State<ExcelCsvReader> {
       }
 
       setState(() {
-        _isLoading = false; // hide progress indicator
+        _isLoading = false;
       });
 
       displayMessage("Data uploaded successfully");
